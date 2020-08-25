@@ -1,0 +1,40 @@
+---
+  version: "2"
+  services:  
+    mysql:
+      image: mariadb
+      container_name: mysql
+      volumes:
+        - /mnt/tank/appdata/mysql:/var/lib/mysql
+      ports:
+        - 3306:3306
+      environment:
+        - MYSQL_ROOT_PASSWORD=supersecret1
+        - MYSQL_PASSWORD=supersecret1
+        - MYSQL_DATABASE=lychee
+        - MYSQL_USER=lychee
+      restart: unless-stopped
+      command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    lychee:
+      image: lycheeorg/lychee
+      container_name: lychee
+      volumes:
+        - /mnt/tank/appdata/lychee/config:/config
+        - /mnt/tank/appdata/lychee/uploads:/uploads
+        - /mnt/tank/appdata/lychee/sym:/sym
+      ports:
+        - 90:80
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - TZ=America/New_York
+        - PHP_TZ=America/New_York
+        - DB_CONNECTION=mysql
+        - DB_HOST=mysql
+        - DB_PORT=3306
+        - DB_USERNAME=lychee
+        - DB_DATABASE=lychee
+        - DB_PASSWORD=supersecret1
+      depends_on:
+        - mysql
+      restart: unless-stopped
