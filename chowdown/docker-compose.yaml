@@ -7,6 +7,8 @@
       volumes:
         - /mnt/tank/appdata/chowdown/config:/config
         - /mnt/tank/appdata/chowdown/recipes:/config/_recipes
+        - /mnt/tank/appdata/chowdown/posts:/config/_posts
+        - /mnt/tank/appdata/chowdown/images:/config/_images
       ports:
         - 4000:4000
       restart: unless-stopped
