@@ -1,0 +1,12 @@
+---
+  version: "2"
+  services:  
+    chowdown:
+      image: gregyankovoy/chowdown
+      container_name: chowdown
+      volumes:
+        - /mnt/tank/appdata/chowdown/config:/config
+        - /mnt/tank/appdata/chowdown/recipes:/config/_recipes
+      ports:
+        - 4000:4000
+      restart: unless-stopped
