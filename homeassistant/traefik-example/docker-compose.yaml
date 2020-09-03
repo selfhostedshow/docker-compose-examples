@@ -1,0 +1,21 @@
+version: "3.7"
+services:
+  homeassistant:
+    container_name: homeassistant
+    image: homeassistant/home-assistant:stable
+    network_mode: host
+    volumes:
+      - /mnt/tank/appdata/homeassistant:/config
+    environment:
+      - TZ=America/New_York
+      - PUID=1000
+      - PGID=1000
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+      - /dev/ttyUSB1:/dev/ttyUSB1
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.homeassistant.loadbalancer.server.port=8123
+      - traefik.http.routers.homeassistant.rule=${HADOMAIN}
+      - traefik.http.routers.homeassistant.entrypoints=websecure
