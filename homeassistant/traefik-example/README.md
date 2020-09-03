@@ -1,4 +1,4 @@
-# Devices
+### Note about devices
 
 ```
     devices:
