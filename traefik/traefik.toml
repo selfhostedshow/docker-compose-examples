@@ -1,0 +1,64 @@
+[global]
+  checkNewVersion = true
+  sendAnonymousUsage = true
+
+[entryPoints]
+  [entryPoints.web]
+    address = ":80"
+  [entryPoints.web.http]
+    [entryPoints.web.http.redirections]
+      [entryPoints.web.http.redirections.entryPoint]
+        to = "websecure"
+        scheme = "https"
+
+  [entryPoints.websecure]
+    address = ":443"
+
+[log]
+level = "ERROR"
+
+[api]
+  dashboard = true
+  insecure = false
+
+[ping]
+
+
+  [http.routers.my-api]
+    rule = "Host(`traefik.internal.host.tld`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+    service = "api@internal"
+    entryPoints = ["websecure"]
+  
+
+
+
+[providers]
+
+  [providers.file]
+  directory = "/etc/traefik/"
+  watch=true
+
+  [providers.docker]
+    endpoint = "tcp://docker-api-endpoint:2376"
+    [providers.docker.tls]
+    caOptional = false
+    insecureSkipVerify = false
+    cert = "/certs/docker-host.crt"
+    key = "/certs/docker-host.key"
+    ca = "/certs/ca.pem"
+
+
+[certificatesResolvers.mydnschallenge.acme]
+
+  # File or key used for certificates storage.
+  #
+  # Required
+  #
+  email = "${INSERTEMAIL}"
+  storage = "acme.json"
+
+
+  caServer = "https://acme-v02.api.letsencrypt.org/directory"
+  [certificatesResolvers.mydnschallenge.acme.dnschallenge]
+    provider = "cloudflare"
+    resolvers = ["1.1.1.1:53", "8.8.8.8:53"]
